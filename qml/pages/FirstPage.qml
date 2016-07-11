@@ -29,6 +29,7 @@ Page {
 			minimumValue: 0
 			maximumValue: model.progressMaxValue
 			value: model.progressValue
+			// valueText: indeterminate ? "" : model.progressValue + "/" + model.progressMaxValue
 			indeterminate: model.progressMaxValue == 0
 		}
 

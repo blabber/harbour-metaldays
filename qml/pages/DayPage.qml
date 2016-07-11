@@ -8,7 +8,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 Page {
-	id: stagePage
+	id: dayPage
 	allowedOrientations: Orientation.All
 
 	property int dayIndex
@@ -36,7 +36,7 @@ Page {
 		itemWidth: width
 		itemHeight: height
 
-		model: stagePage.day['stages'].length
+		model: dayPage.day['stages'].length
 
 		delegate: Item {
 			width: slideShowView.itemWidth
@@ -59,7 +59,7 @@ Page {
 
 				model: ListModel {
 					Component.onCompleted: {
-						var events = stagePage.day['stages'][index]['events'];
+						var events = dayPage.day['stages'][index]['events'];
 						events.forEach(function (e, i, a) {
 							append({ 'time': e['time'], 'title': e['title'], 'genre': e['genre'], 'url': e['url'] });
 						});

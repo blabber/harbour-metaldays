@@ -25,11 +25,11 @@ class Controller:
             p = runningorder.Parser()
             p.feed(f.read().decode('utf-8'))
             pyotherside.send('numberOfEventsDetermined', p.number_of_events)
-            d = self.__add__genres(p.running_order)
+            d = self.__add_genres(p.running_order)
         if d:
             pyotherside.send('dataLoaded', d)
 
-    def __add__genres(self, d):
+    def __add_genres(self, d):
         for day in d['days']:
             for stages in day['stages']:
                 for event in stages['events']:
