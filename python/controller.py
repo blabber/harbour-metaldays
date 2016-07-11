@@ -10,6 +10,9 @@ import urllib.request
 import traceback
 import sys
 import ssl
+import os
+import os.path
+import json
 
 import runningorder
 import band
@@ -19,6 +22,13 @@ class Controller:
         self.bgthread = threading.Thread()
         self.bgthread.start()
 
+        home = os.path.expanduser('~')
+
+        xdg_cache_home = os.environ.get('XDG_CACHE_HOME', os.path.join(home, '.cache'))
+        self.cache_file = os.path.join(xdg_cache_home, "harbour-metaldays", "cache.json")
+
+        self.__load_cache()
+
     def load_data(self):
         url = 'http://www.metaldays.net/Line_up'
         with open_request(url) as f:
@@ -26,6 +36,24 @@ class Controller:
             p.feed(f.read().decode('utf-8'))
             pyotherside.send('numberOfEventsDetermined', p.number_of_events)
             d = self.__add_genres(p.running_order)
+        if d:
+            pyotherside.send('dataLoaded', d)
+            self.__save_cache(d)
+
+    def __save_cache(self, d):
+        os.makedirs(os.path.dirname(self.cache_file), exist_ok=True)
+
+        with open(self.cache_file, 'w') as f:
+            json.dump(d, f, indent=2)
+
+    def __load_cache(self):
+        if not os.path.exists(self.cache_file):
+            self.refresh()
+            return
+
+        with open(self.cache_file, 'r') as f:
+            d = json.load(f)
+
         if d:
             pyotherside.send('dataLoaded', d)
 

@@ -30,9 +30,7 @@ Python {
 			pageStack.push('pages/ErrorPage.qml', { 'error': error })
 		});
 
-		importModule('controller', function () {
-			startRefresh();
-		});
+		importModule('controller', function () {})
 	}
 
 	function startRefresh() {
