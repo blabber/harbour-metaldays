@@ -119,7 +119,7 @@ Page {
 	function populateList() {
 		if (model.data['days']) {
 			model.data['days'].forEach(function(e, i, a) {
-				daysListModel.append({'index': i, 'day': 'Day ' + (i+1), 'date': e['date']});
+				daysListModel.append({'index': i, 'day': 'Day ' + (i+1), 'date': e['label']});
 			});
 		}
 	}

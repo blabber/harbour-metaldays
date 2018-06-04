@@ -12,17 +12,8 @@ Python {
 		addImportPath(Qt.resolvedUrl('../python'));
 
 		setHandler('dataLoaded', function(newvalue) {
-			model.data = newvalue;
+			model.data = newvalue.data;
 			model.refreshing = false;
-		});
-
-		setHandler('eventProcessed', function(newvalue) {
-			model.progressValue += 1
-			model.progressLabel = newvalue;
-		});
-
-		setHandler('numberOfEventsDetermined', function(newvalue) {
-			model.progressMaxValue = newvalue;
 		});
 
 		setHandler('refreshError', function(error) {

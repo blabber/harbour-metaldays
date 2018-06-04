@@ -18,7 +18,7 @@ Page {
 		id: pageHeader
 		width: parent.width
 		title: 'Day ' + (dayIndex + 1)
-		description: day['date']
+		description: day['label']
 	}
 
 	SlideshowView {
@@ -39,12 +39,14 @@ Page {
 		model: dayPage.day['stages'].length
 
 		delegate: Item {
+			property var stage: day['stages'][index]
+
 			width: slideShowView.itemWidth
 			height: slideShowView.itemHeight
 
 			SectionHeader {
 				id: stageHeader
-				text: day['stages'][index]['name']
+				text: stage['label']
 			}
 
 			SilicaListView {
@@ -59,9 +61,9 @@ Page {
 
 				model: ListModel {
 					Component.onCompleted: {
-						var events = dayPage.day['stages'][index]['events'];
+						var events = stage['events'];
 						events.forEach(function (e, i, a) {
-							append({ 'time': e['time'], 'title': e['title'], 'genre': e['genre'], 'url': e['url'] });
+							append({ 'time': e['time'], 'title': e['label'], 'url': e['url'] });
 						});
 					}
 				}
@@ -69,7 +71,7 @@ Page {
 				delegate: ListItem {
 					id: listItem
 
-					contentHeight: Theme.itemSizeMedium
+					contentHeight: Theme.itemSizeSmall
 					width: ListView.view.width
 					enabled: url != '#'
 
@@ -113,20 +115,6 @@ Page {
 							text: title
 							truncationMode: TruncationMode.Fade
 							color: !listItem.enabled || listItem.highlighted ? Theme.highlightColor : Theme.primaryColor
-						}
-
-						Label {
-							anchors {
-								left: timeLabel.right
-								leftMargin: Theme.paddingMedium
-								right: parent.right
-								top: titleLabel.bottom
-							}
-
-							text: genre
-							font.pixelSize: Theme.fontSizeSmall
-							truncationMode: TruncationMode.Fade
-							color: !listItem.enabled || listItem.highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
 						}
 					}
 				}

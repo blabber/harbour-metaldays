@@ -14,9 +14,6 @@ import os
 import os.path
 import json
 
-import runningorder
-import band
-
 class Controller:
     def __init__(self):
         self.bgthread = threading.Thread()
@@ -30,12 +27,9 @@ class Controller:
         self.__load_cache()
 
     def load_data(self):
-        url = 'http://www.metaldays.net/Line_up'
+        url = 'https://gist.githubusercontent.com/blabber/babc4803141b0ec13fd613cc84eae074/raw'
         with open_request(url) as f:
-            p = runningorder.Parser()
-            p.feed(f.read().decode('utf-8'))
-            pyotherside.send('numberOfEventsDetermined', p.number_of_events)
-            d = self.__add_genres(p.running_order)
+            d = json.loads(f.read().decode('utf-8'))
         if d:
             pyotherside.send('dataLoaded', d)
             self.__save_cache(d)
@@ -56,22 +50,6 @@ class Controller:
 
         if d:
             pyotherside.send('dataLoaded', d)
-
-    def __add_genres(self, d):
-        for day in d['days']:
-            for stages in day['stages']:
-                for event in stages['events']:
-                    pyotherside.send('eventProcessed', event['title'])
-
-                    g = 'unknown'
-                    url = event['url']
-
-                    if url and url != '#':
-                        with open_request(url) as f:
-                            g = band.get_genre(f.read().decode('utf-8'))
-
-                    event['genre'] = g
-        return d
 
     def refresh(self):
         if self.bgthread.is_alive():
