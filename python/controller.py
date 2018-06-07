@@ -14,6 +14,9 @@ import os
 import os.path
 import json
 
+class JSendError(Exception):
+    pass
+
 class Controller:
     def __init__(self):
         self.bgthread = threading.Thread()
@@ -30,7 +33,10 @@ class Controller:
         url = 'https://gist.githubusercontent.com/blabber/babc4803141b0ec13fd613cc84eae074/raw'
         with open_request(url) as f:
             d = json.loads(f.read().decode('utf-8'))
+
         if d:
+            if d['status'] == "error":
+                raise JSendError(d['message'])
             pyotherside.send('dataLoaded', d)
             self.__save_cache(d)
 
@@ -61,6 +67,9 @@ class Controller:
     def __refresh_in_background(self):
         try:
             self.load_data()
+        except JSendError as e:
+            es = 'Backend error: {0}'.format(e)
+            pyotherside.send('refreshError', es)
         except:
             traceback.print_exc()
 
