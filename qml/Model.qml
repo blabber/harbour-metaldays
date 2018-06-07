@@ -8,10 +8,5 @@ import QtQuick 2.0
 
 Item {
 	property bool refreshing: true
-
 	property var data: ({ })
-
-	property string progressLabel: " "
-	property int progressValue: 0
-	property int progressMaxValue: 0
 }
