@@ -74,15 +74,7 @@ Page {
 					contentHeight: Theme.itemSizeSmall
 					width: ListView.view.width
 					enabled: url != '#'
-
-					onClicked: pageStack.push('WebViewPage.qml', { 'url': url });
-
-					menu: ContextMenu {
-						MenuItem {
-							text: 'Open in external browser'
-							onClicked: Qt.openUrlExternally(url);
-						}
-					}
+					onClicked: Qt.openUrlExternally(url);
 
 					Item {
 						height: childrenRect.height
