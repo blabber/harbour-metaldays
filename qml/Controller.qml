@@ -25,10 +25,6 @@ Python {
 	}
 
 	function startRefresh() {
-		model.progressLabel = "Refreshing..."
-		model.progressValue = 0
-		model.progressMaxValue = 0
-
 		model.refreshing = true;
 		call('controller.instance.refresh', function() {});
 	}

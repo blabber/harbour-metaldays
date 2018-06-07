@@ -26,16 +26,12 @@ Page {
 				margins: Theme.horizontalPageMargin
 			}
 
-			minimumValue: 0
-			maximumValue: model.progressMaxValue
-			value: model.progressValue
-			// valueText: indeterminate ? "" : model.progressValue + "/" + model.progressMaxValue
-			indeterminate: model.progressMaxValue == 0
+			indeterminate: true
 		}
 
 		Label {
 			anchors.horizontalCenter: parent.horizontalCenter
-			text: model.progressLabel
+			text: "Refreshing…"
 			color: Theme.secondaryHighlightColor
 		}
 	}
