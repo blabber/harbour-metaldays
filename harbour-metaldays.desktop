@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=MetalDays
+Exec=sailfish-qml harbour-metaldays
+Icon=harbour-metaldays
+X-Nemo-Application-Type=silica-qt5
