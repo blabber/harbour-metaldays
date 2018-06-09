@@ -3,7 +3,7 @@
 
 Summary: An unofficial MetalDays running order for Sailfish OS
 Name: harbour-metaldays
-Version: 0.1.0
+Version: 0.1.1
 Release: 1
 Source: %{name}-%{version}.tar.gz
 BuildArch: noarch
@@ -36,6 +36,7 @@ TARGET=%{buildroot}/%{_datadir}/%{name}
 mkdir -p $TARGET
 cp -rpv python $TARGET/
 cp -rpv qml $TARGET/
+cp -rpv img $TARGET/
 
 TARGET=%{buildroot}/%{_datadir}/applications
 mkdir -p $TARGET
