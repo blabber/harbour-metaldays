@@ -10,10 +10,32 @@ import Sailfish.Silica 1.0
 CoverBackground {
 	id: cover
 
+	Image {
+		id: coverImage
+		source: "../../img/cover.png"
+		fillMode: Image.PreserveAspectFit
+		opacity: 0.125
+
+		anchors {
+			top: parent.top
+			bottom: parent.verticalCenter
+			left: parent.left
+			right: parent.right
+			margins: Theme.paddingSmall
+		}
+	}
+
 	Label {
-		id: metaldaysLabel
-		anchors.centerIn: parent
+		id: coverLabel
+
+		anchors {
+			top: coverImage.bottom
+			topMargin: Theme.paddingSmall
+			horizontalCenter: coverImage.horizontalCenter
+		}
+
 		text: 'Metaldays'
+		font.pixelSize: Theme.fontSizeLarge
 		color: Theme.secondaryColor
 	}
 
@@ -23,7 +45,7 @@ CoverBackground {
 		running: model.refreshing
 		anchors {
 			horizontalCenter: parent.horizontalCenter
-			bottom: metaldaysLabel.top
+			top: coverLabel.bottom
 			bottomMargin: Theme.paddingSmall
 		}
 
@@ -32,6 +54,19 @@ CoverBackground {
 			duration: 2000
 			running: cover.status == Cover.Active && indicator.running
 			loops: Animation.Infinite
+		}
+	}
+
+	CoverActionList {
+		CoverAction {
+			iconSource: "image://theme/icon-cover-refresh"
+			onTriggered: {
+				for (var i = pageStack.depth; i > 0; i--) {
+					pageStack.pop(null, PageStackAction.Immediate);
+				}
+
+				controller.startRefresh();
+			}
 		}
 	}
 }
