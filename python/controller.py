@@ -21,41 +21,7 @@ class Controller:
     def __init__(self):
         self.bgthread = threading.Thread()
         self.bgthread.start()
-
-        home = os.path.expanduser('~')
-
-        xdg_cache_home = os.environ.get('XDG_CACHE_HOME', os.path.join(home, '.cache'))
-        self.cache_file = os.path.join(xdg_cache_home, "harbour-metaldays", "cache.json")
-
-        self.__load_cache()
-
-    def load_data(self):
-        url = 'https://gist.githubusercontent.com/blabber/babc4803141b0ec13fd613cc84eae074/raw'
-        with open_request(url) as f:
-            d = json.loads(f.read().decode('utf-8'))
-
-        if d:
-            if d['status'] == "error":
-                raise JSendError(d['message'])
-            pyotherside.send('dataLoaded', d)
-            self.__save_cache(d)
-
-    def __save_cache(self, d):
-        os.makedirs(os.path.dirname(self.cache_file), exist_ok=True)
-
-        with open(self.cache_file, 'w') as f:
-            json.dump(d, f, indent=2)
-
-    def __load_cache(self):
-        if not os.path.exists(self.cache_file):
-            self.refresh()
-            return
-
-        with open(self.cache_file, 'r') as f:
-            d = json.load(f)
-
-        if d:
-            pyotherside.send('dataLoaded', d)
+        self.refresh()
 
     def refresh(self):
         if self.bgthread.is_alive():
@@ -66,7 +32,7 @@ class Controller:
 
     def __refresh_in_background(self):
         try:
-            self.load_data()
+            self.__load_data()
         except JSendError as e:
             es = 'Backend error: {0}'.format(e)
             pyotherside.send('refreshError', es)
@@ -76,6 +42,16 @@ class Controller:
             ei = sys.exc_info()
             es = ''.join(traceback.format_exception_only(ei[0], ei[1]))
             pyotherside.send('refreshError', es)
+
+    def __load_data(self):
+        url = 'https://gist.githubusercontent.com/blabber/babc4803141b0ec13fd613cc84eae074/raw'
+        with open_request(url) as f:
+            d = json.loads(f.read().decode('utf-8'))
+
+        if d:
+            if d['status'] == "error":
+                raise JSendError(d['message'])
+            pyotherside.send('dataLoaded', d)
 
 def open_request(url):
     ctx = ssl.create_default_context()
