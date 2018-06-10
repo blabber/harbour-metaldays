@@ -9,4 +9,5 @@ import QtQuick 2.0
 Item {
 	property bool refreshing: true
 	property var data: ({ })
+	property date now: new Date()
 }

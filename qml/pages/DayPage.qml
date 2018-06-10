@@ -7,12 +7,16 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 
+import "../../javascript/tools.js" as Tools
+
 Page {
 	id: dayPage
 	allowedOrientations: Orientation.All
 
 	property int dayIndex
 	property var day: model.data['days'][dayIndex]
+	property date dayStart: Tools.labelToDate(day.label)
+	property date now: model.now
 
 	PageHeader {
 		id: pageHeader
@@ -61,10 +65,43 @@ Page {
 
 				model: ListModel {
 					Component.onCompleted: {
-						var events = stage['events'];
-						events.forEach(function (e, i, a) {
-							append({ 'time': e['time'], 'title': e['label'], 'url': e['url'] });
-						});
+						for (var i = 0; i < stage.events.length; i++)
+						{
+							var prevEndDate = "dummy";
+							var startDate = "dummy";
+							var endDate = "dummy";
+							var nextStartDate = "dummy";
+
+							var e = stage.events[i];
+							if (e.time.trim() != '-') {
+								startDate = Tools.addTimeStringToDate(dayPage.dayStart, e.time.split(' - ')[0]);
+								endDate = Tools.addTimeStringToDate(dayPage.dayStart, e.time.split(' - ')[1]);
+
+								prevEndDate = dayPage.dayStart;
+								nextStartDate = endDate;
+
+								if (i > 0) {
+									var ne = stage.events[i-1];
+									nextStartDate = Tools.addTimeStringToDate(dayPage.dayStart, ne.time.split(' - ')[0]);
+								}
+
+								if (i < stage.events.length-1) {
+									var pe = stage.events[i+1];
+									prevEndDate= Tools.addTimeStringToDate(dayPage.dayStart, pe.time.split(' - ')[1]);
+								}
+							}
+
+							var item = {
+								'time': e.time,
+								'title': e.label,
+								'url': e.url,
+								'prevEndDate': prevEndDate,
+								'startDate': startDate,
+								'endDate': endDate,
+								'nextStartDate': nextStartDate};
+
+							append(item);
+						}
 					}
 				}
 
@@ -76,7 +113,80 @@ Page {
 					enabled: url != '#'
 					onClicked: Qt.openUrlExternally(url);
 
+					Rectangle {
+						width: Theme.paddingSmall
+						color: Theme.secondaryHighlightColor
+
+						visible: {
+							if (nextStartDate == "dummy" || endDate == "dummy") {
+								return false;
+							}
+
+							if (dayPage.now < nextStartDate && dayPage.now > endDate) {
+								return true;
+							}
+
+							return false;
+						}
+
+						anchors {
+							top: parent.top
+							bottom: innerListItem.top
+							right: innerListItem.left
+							rightMargin: Theme.paddingSmall
+						}
+					}
+
+					Rectangle {
+						width: Theme.paddingSmall
+						color: Theme.secondaryHighlightColor
+
+						visible: {
+							if (startDate == "dummy" || endDate == "dummy") {
+								return false;
+							}
+
+							if (dayPage.now >= startDate && dayPage.now <= endDate) {
+								return true;
+							}
+
+							return false;
+						}
+
+						anchors {
+							top: innerListItem.top
+							bottom: innerListItem.bottom
+							right: innerListItem.left
+							rightMargin: Theme.paddingSmall
+						}
+					}
+
+					Rectangle {
+						width: Theme.paddingSmall
+						color: Theme.secondaryHighlightColor
+
+						visible: {
+							if (startDate == "dummy" || endDate == "dummy") {
+								return false;
+							}
+
+							if (dayPage.now > prevEndDate && dayPage.now < startDate) {
+								return true;
+							}
+
+							return false;
+						}
+
+						anchors {
+							top: innerListItem.bottom
+							bottom: parent.bottom
+							right: innerListItem.left
+							rightMargin: Theme.paddingSmall
+						}
+					}
+
 					Item {
+						id: innerListItem
 						height: childrenRect.height
 
 						anchors {

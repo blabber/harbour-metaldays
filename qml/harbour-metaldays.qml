@@ -15,4 +15,11 @@ ApplicationWindow
 
 	Model { id: model }
 	Controller { id: controller }
+
+	Timer {
+		repeat: true
+		triggeredOnStart: true
+		running: Qt.application.state == Qt.ApplicationActive
+		onTriggered: model.now = new Date()
+	}
 }

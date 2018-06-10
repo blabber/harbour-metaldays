@@ -7,10 +7,13 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 
+import "../../javascript/tools.js" as Tools
+
 Page {
 	id: firstPage
-
 	allowedOrientations: Orientation.All
+
+	property date now: model.now
 
 	Column {
 		anchors.centerIn: parent
@@ -67,16 +70,34 @@ Page {
 
 			contentHeight: Theme.itemSizeMedium
 
-			Column {
-				width: parent.width
+			Rectangle {
+				color: Theme.secondaryHighlightColor
+				width: Theme.paddingSmall
+				visible: firstPage.now >= startDate && firstPage.now <= endDate
+
+				anchors {
+					right: innerListItem.left
+					rightMargin: Theme.paddingSmall
+					top: innerListItem.top
+					bottom: innerListItem.bottom
+				}
+			}
+
+			Item {
+				id: innerListItem
+				height: childrenRect.height
 
 				anchors {
 					verticalCenter: parent.verticalCenter
 					left: parent.left
+					right: parent.right
 					leftMargin: Theme.horizontalPageMargin
+					rightMargin: Theme.horizontalPageMargin
 				}
 
 				Label {
+					id: dayLabel
+					anchors.left: parent.left
 					text: day
 					color: listItem.highlighted ? Theme.highlightColor : Theme.primaryColor
 				}
@@ -85,6 +106,11 @@ Page {
 					text: date
 					color: listItem.highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
 					font.pixelSize: Theme.fontSizeSmall
+
+					anchors {
+						left: parent.left
+						top: dayLabel.bottom
+					}
 				}
 			}
 
@@ -115,7 +141,19 @@ Page {
 	function populateList() {
 		if (model.data['days']) {
 			model.data['days'].forEach(function(e, i, a) {
-				daysListModel.append({'index': i, 'day': 'Day ' + (i+1), 'date': e['label']});
+				var d = Tools.labelToDate(e.label);
+
+				var startDate = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
+				var endDate = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999);
+
+				var item = {
+					'index': i,
+					'day': 'Day ' + (i+1),
+					'date': e['label'],
+					'startDate': startDate,
+					'endDate': endDate};
+
+				daysListModel.append(item);
 			});
 		}
 	}
