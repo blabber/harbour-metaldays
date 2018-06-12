@@ -7,8 +7,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 
-import "../../javascript/tools.js" as Tools
-
 Page {
 	id: firstPage
 	allowedOrientations: Orientation.All
@@ -73,7 +71,7 @@ Page {
 			Rectangle {
 				color: Theme.secondaryHighlightColor
 				width: Theme.paddingSmall
-				visible: firstPage.now >= startDate && firstPage.now <= endDate
+				visible: firstPage.now >= startDate && firstPage.now < endDate
 
 				anchors {
 					right: innerListItem.left
@@ -141,15 +139,13 @@ Page {
 	function populateList() {
 		if (model.data['days']) {
 			model.data['days'].forEach(function(e, i, a) {
-				var d = Tools.labelToDate(e.label);
-
-				var startDate = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
-				var endDate = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999);
+				var startDate = new Date(e.timestamps.start * 1000);
+				var endDate = new Date(e.timestamps.end * 1000);
 
 				var item = {
 					'index': i,
 					'day': 'Day ' + (i+1),
-					'date': e['label'],
+					'date': e.label,
 					'startDate': startDate,
 					'endDate': endDate};
 

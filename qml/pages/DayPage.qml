@@ -7,15 +7,13 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 
-import "../../javascript/tools.js" as Tools
-
 Page {
 	id: dayPage
 	allowedOrientations: Orientation.All
 
 	property int dayIndex
 	property var day: model.data['days'][dayIndex]
-	property date dayStart: Tools.labelToDate(day.label)
+	property date dayStart: new Date(day.timestamps.start * 1000)
 	property date now: model.now
 
 	PageHeader {
@@ -73,21 +71,21 @@ Page {
 							var nextStartDate = "dummy";
 
 							var e = stage.events[i];
-							if (e.time.trim() != '-') {
-								startDate = Tools.addTimeStringToDate(dayPage.dayStart, e.time.split(' - ')[0]);
-								endDate = Tools.addTimeStringToDate(dayPage.dayStart, e.time.split(' - ')[1]);
+							if (e.timestamps != null) {
+								startDate = new Date(e.timestamps.start * 1000);
+								endDate = new Date(e.timestamps.end * 1000);
 
 								prevEndDate = dayPage.dayStart;
 								nextStartDate = endDate;
 
 								if (i > 0) {
 									var ne = stage.events[i-1];
-									nextStartDate = Tools.addTimeStringToDate(dayPage.dayStart, ne.time.split(' - ')[0]);
+									nextStartDate = new Date(ne.timestamps.start * 1000);
 								}
 
 								if (i < stage.events.length-1) {
 									var pe = stage.events[i+1];
-									prevEndDate= Tools.addTimeStringToDate(dayPage.dayStart, pe.time.split(' - ')[1]);
+									prevEndDate= new Date(pe.timestamps.end * 1000);
 								}
 							}
 
@@ -122,7 +120,7 @@ Page {
 								return false;
 							}
 
-							if (dayPage.now < nextStartDate && dayPage.now > endDate) {
+							if (dayPage.now < nextStartDate && dayPage.now >= endDate) {
 								return true;
 							}
 
@@ -146,7 +144,7 @@ Page {
 								return false;
 							}
 
-							if (dayPage.now >= startDate && dayPage.now <= endDate) {
+							if (dayPage.now >= startDate && dayPage.now < endDate) {
 								return true;
 							}
 
@@ -170,7 +168,7 @@ Page {
 								return false;
 							}
 
-							if (dayPage.now > prevEndDate && dayPage.now < startDate) {
+							if (dayPage.now >= prevEndDate && dayPage.now < startDate) {
 								return true;
 							}
 

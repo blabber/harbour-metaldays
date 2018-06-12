@@ -37,7 +37,6 @@ mkdir -p $TARGET
 cp -rpv python $TARGET/
 cp -rpv qml $TARGET/
 cp -rpv img $TARGET/
-cp -rpv javascript $TARGET/
 
 TARGET=%{buildroot}/%{_datadir}/applications
 mkdir -p $TARGET
