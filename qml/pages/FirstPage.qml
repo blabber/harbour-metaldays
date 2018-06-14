@@ -68,19 +68,6 @@ Page {
 
 			contentHeight: Theme.itemSizeMedium
 
-			Rectangle {
-				color: Theme.secondaryHighlightColor
-				width: Theme.paddingSmall
-				visible: firstPage.now >= startDate && firstPage.now < endDate
-
-				anchors {
-					right: innerListItem.left
-					rightMargin: Theme.paddingSmall
-					top: innerListItem.top
-					bottom: innerListItem.bottom
-				}
-			}
-
 			Item {
 				id: innerListItem
 				height: childrenRect.height
@@ -98,12 +85,15 @@ Page {
 					anchors.left: parent.left
 					text: day
 					color: listItem.highlighted ? Theme.highlightColor : Theme.primaryColor
+					font.weight: firstPage.now >= startDate && firstPage.now < endDate ? Font.Bold : Font.Normal
 				}
 
 				Label {
 					text: date
 					color: listItem.highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
 					font.pixelSize: Theme.fontSizeSmall
+					font.weight: firstPage.now >= startDate && firstPage.now < endDate ? Font.Bold : Font.Normal
+					font.strikeout: firstPage.now > endDate
 
 					anchors {
 						left: parent.left
