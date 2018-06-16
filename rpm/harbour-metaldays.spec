@@ -3,7 +3,7 @@
 
 Summary: An unofficial MetalDays running order for Sailfish OS
 Name: harbour-metaldays
-Version: 0.1.2
+Version: 0.1.3
 Release: 1
 Source: %{name}-%{version}.tar.gz
 BuildArch: noarch
